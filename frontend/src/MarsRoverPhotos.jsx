@@ -1,94 +1,88 @@
-import React, { useEffect, useState } from 'react'
-import DatePicker from './components/DatePicker'
+// src/components/MarsRoverPhotos.jsx
+import React, { useEffect, useState } from 'react';
+import DatePicker from './components/DatePicker';
+import { Container, Row, Col, Card, Spinner, Alert, Form } from 'react-bootstrap';
 
 export default function MarsRoverPhotos() {
-  const rovers = ['Curiosity', 'Opportunity', 'Spirit']
-  const [selectedRover, setSelectedRover] = useState('Curiosity')
-  const [date, setDate] = useState('')
-  const [photos, setPhotos] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const rovers = ['Curiosity', 'Opportunity', 'Spirit'];
+  const [selectedRover, setSelectedRover] = useState('Curiosity');
+  const [date, setDate] = useState('');
+  const [photos, setPhotos] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!date) return
+    if (!date) return;
 
     const fetchPhotos = async () => {
-      setLoading(true)
-      setError('')
-      setPhotos([])
+      setLoading(true);
+      setError('');
+      setPhotos([]);
 
       try {
-        const response = await fetch(
-          `/api/mars-photos?rover=${selectedRover.toLowerCase()}&earth_date=${date}`
-        )
-        if (!response.ok) throw new Error(`Error ${response.status}`)
-        const data = await response.json()
-        setPhotos(data.photos)
+        const res = await fetch(
+          `/api/mars-photos?rover=${selectedRover.toLowerCase()}&earth_date=${date}&page=1`
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setPhotos(data.photos.slice(0, 25)); 
       } catch (err) {
-        console.error(err)
-        setError('获取照片失败，请重试')
+        console.error(err);
+        setError('Failed to retrieve photos, please try again');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchPhotos()
-  }, [date, selectedRover])
+    fetchPhotos();
+  }, [date, selectedRover]);
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow">
-      <h1 className="text-2xl font-semibold mb-4">Mars Rover Photos</h1>
+    <Container className='my-4' style={{ maxWidth: '1400px' }}>
+      <h1 className='mb-4'>Mars Rover Photos</h1>
+      <Form className="d-flex mb-4 align-items-center gap-4">
+        <Form.Group controlId="roverSelect" className="d-flex align-items-center me-3">
+          <Form.Label htmlFor="roverSelect"  className="mb-0 me-2">Select a Rover</Form.Label>
+          <Form.Select
+            value={selectedRover}
+            onChange={e => setSelectedRover(e.target.value)}
+            className="w-auto"
+          >
+            {rovers.map(r => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </Form.Select>
+        </Form.Group>
 
-      {/* Rover Selector */}
-      <div className="mb-4">
-        <label className="mr-2 font-medium" htmlFor="rover-select">选择探测车：</label>
-        <select
-          id="rover-select"
-          value={selectedRover}
-          onChange={e => setSelectedRover(e.target.value)}
-          className="border rounded px-2 py-1"
-        >
-          {rovers.map(r => (
-            <option key={r} value={r}>
-              {r}
-            </option>
-          ))}
-        </select>
-      </div>
+        <Form.Group controlId="datePicker" className="mb-0 me-2">
+          <Form.Label>Select Date</Form.Label>
+          <DatePicker value={date} onChange={setDate} className="w-auto"  />
+        </Form.Group>
+      </Form>
 
-      {/* Date Picker */}
-      <div className="mb-6">
-        <label htmlFor="earth-date" className="mr-2 font-medium">选择日期：</label>
-        <DatePicker value={date} onChange={setDate} />
-      </div>
+      {loading && <Spinner animation="border" />}
 
-      {/* Status Messages */}
-      {loading && <p className="text-center">加载中…</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      {/* Photos Grid */}
-      {!loading && photos.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {photos.map(photo => (
-            <div key={photo.id} className="border rounded overflow-hidden">
-              <img
-                src={photo.img_src}
-                alt={`${selectedRover} - ${photo.camera.full_name}`}
-                className="w-full"
-              />
-              <div className="p-2">
-                <p className="text-sm">相机: {photo.camera.full_name}</p>
-                <p className="text-xs text-gray-500">拍摄日期: {photo.earth_date}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+      {!loading && !error && photos.length === 0 && date && (
+        <Alert variant="warning">No photos found for this date.</Alert>
       )}
 
-      {/* No Photos */}
-      {!loading && date && photos.length === 0 && !error && (
-        <p className="text-center">没有找到该日期的照片，请选择其他日期。</p>
-      )}
-    </div>
-  )
+      <Row xs={1} sm={2} md={5} className="g-4">
+        {photos.map(photo => (
+          <Col key={photo.id}>
+            <Card>
+              <Card.Img variant="top" src={photo.img_src} />
+              <Card.Body>
+                <Card.Text>
+                  <strong>Camera:</strong> {photo.camera.full_name}<br/>
+                  <small className="text-muted">Date: {photo.earth_date}</small>
+                </Card.Text>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
+    </Container>
+  );
 }

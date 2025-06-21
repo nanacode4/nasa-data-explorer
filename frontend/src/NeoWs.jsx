@@ -30,7 +30,7 @@ export default function NeoWs() {
         setNeos(flattened)
       } catch (err) {
         console.error(err)
-        setError('获取近地天体数据失败，请重试')
+        setError('Failed to obtain NEO data, please try again')
       } finally {
         setLoading(false)
       }
@@ -40,20 +40,20 @@ export default function NeoWs() {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow mb-8">
-      <h2 className="text-2xl font-semibold mb-4">近地天体 (NeoWs)</h2>
+      <h2 className="text-2xl font-semibold mb-4">Near Earth Object Web Service (NeoWs)</h2>
 
       <div className="mb-4 flex flex-wrap gap-4">
         <div>
-          <label htmlFor="neo-start" className="mr-2 font-medium">开始日期：</label>
+          <label htmlFor="neo-start" className="mr-2 font-medium">start date：</label>
           <DatePicker id="neo-start" value={startDate} onChange={setStartDate} />
         </div>
         <div>
-          <label htmlFor="neo-end" className="mr-2 font-medium">结束日期：</label>
+          <label htmlFor="neo-end" className="mr-2 font-medium">End Date：</label>
           <DatePicker id="neo-end" value={endDate} onChange={setEndDate} />
         </div>
       </div>
 
-      {loading && <p className="text-center">加载中…</p>}
+      {loading && <p className="text-center">loading…</p>}
       {error && <p className="text-red-500 text-center">{error}</p>}
 
       {!loading && neos.length > 0 && (
@@ -61,19 +61,19 @@ export default function NeoWs() {
           {neos.map(neo => (
             <div key={neo.id} className="border rounded p-4">
               <h3 className="font-bold truncate">{neo.name}</h3>
-              <p className="text-sm">接近日期: {neo.close_approach_date}</p>
+              <p className="text-sm">Approaching date: {neo.close_approach_date}</p>
               <p className="text-sm">
-                估算直径: {neo.estimated_diameter.kilometers.estimated_diameter_min.toFixed(3)} - {neo.estimated_diameter.kilometers.estimated_diameter_max.toFixed(3)} km
+                Estimated diameter: {neo.estimated_diameter.kilometers.estimated_diameter_min.toFixed(3)} - {neo.estimated_diameter.kilometers.estimated_diameter_max.toFixed(3)} km
               </p>
-              <p className="text-sm">是否潜在危险: {neo.is_potentially_hazardous_asteroid ? '是' : '否'}</p>
-              <p className="text-sm">最小距离: {parseFloat(neo.close_approach_data?.[0]?.miss_distance.kilometers).toFixed(0)} km</p>
+              <p className="text-sm">Is it potentially dangerous?: {neo.is_potentially_hazardous_asteroid ? ' yes' : 'no'}</p>
+              <p className="text-sm">Minimum distance: {parseFloat(neo.close_approach_data?.[0]?.miss_distance.kilometers).toFixed(0)} km</p>
             </div>
-          ))}
+          ))} 
         </div>
       )}
 
       {!loading && startDate && neos.length === 0 && !error && (
-        <p className="text-center">未找到该日期范围内的近地天体。</p>
+        <p className="text-center">No NEOs were found for this date range.</p>
       )}
     </div>
   )

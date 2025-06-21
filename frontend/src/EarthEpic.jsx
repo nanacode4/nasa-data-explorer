@@ -1,67 +1,78 @@
-import React, { useEffect, useState } from 'react'
-import DatePicker from './components/DatePicker'
+import React, { useState, useEffect } from 'react';
+import DatePicker from './components/DatePicker';
+import { Container, Row, Col, Card, Spinner, Alert, Form } from 'react-bootstrap';
 
 export default function EarthEpic() {
-  const [date, setDate] = useState('')
-  const [images, setImages] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [date, setDate] = useState('');
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!date) return
-    const fetchEPIC = async () => {
-      setLoading(true)
-      setError('')
-      setImages([])
+    if (!date) return;
+    const fetchImages = async () => {
+      setLoading(true);
+      setError('');
+      setImages([]);
       try {
-        const res = await fetch(`/api/epic?date=${date}`)
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const data = await res.json()
-        setImages(data)
+        const res = await fetch(`/api/epic?date=${date}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+        setImages(data);
       } catch (err) {
-        console.error(err)
-        setError('获取 EPIC 图像失败，请重试')
+        console.error(err);
+        setError('Failed to load EPIC images.');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchEPIC()
-  }, [date])
+    };
+    fetchImages();
+  }, [date]);
 
   return (
-    <div className="container mx-auto p-6 bg-white rounded-lg shadow mb-8">
-      <h2 className="text-2xl font-semibold mb-4">EPIC (Earth Polychromatic Imaging Camera)</h2>
+    <Container fluid className="my-4">
+      <h2 className="mb-4">EPIC (Earth Polychromatic Imaging Camera)</h2>
 
-      <div className="mb-6">
-        <label htmlFor="epic-date" className="mr-2 font-medium">选择日期：</label>
-        <DatePicker value={date} onChange={setDate} />
-      </div>
+      <Form className="d-flex align-items-center mb-4 gap-3">
+        <Form.Label htmlFor="epicDate" className="mb-0 me-2">
+          Select Date:
+        </Form.Label>
+        <DatePicker id="epicDate" value={date} onChange={setDate} />
+      </Form>
 
-      {loading && <p className="text-center">加载中…</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
+      {loading && <Spinner animation="border" />}
+      {error && <Alert variant="danger">{error}</Alert>}
 
-      {!loading && images.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {images.map(img => {
-            // EPIC returns image metadata with image name
-            const datePath = img.date.split(' ')[0].split('-').join('/')
-            const url = `https://epic.gsfc.nasa.gov/archive/natural/${datePath}/png/${img.image}.png`
-            return (
-              <div key={img.identifier} className="border rounded overflow-hidden">
-                <img src={url} alt={img.caption} className="w-full" />
-                <div className="p-2">
-                  <p className="text-sm truncate">{img.caption}</p>
-                  <p className="text-xs text-gray-500">{img.date}</p>
+      {!loading && !error && images.length === 0 && date && (
+        <Alert variant="warning">No EPIC images found for this date.</Alert>
+      )}
+
+      <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+        {images.map(img => {
+          const datePath = img.date.split(' ')[0].split('-').join('/');
+          const url = `https://epic.gsfc.nasa.gov/archive/natural/${datePath}/png/${img.image}.png`;
+          return (
+            <Col key={img.identifier}>
+              <Card>
+                <div style={{ overflow: 'hidden', maxHeight: 400 }}>
+                  <Card.Img
+                    variant="top"
+                    src={url}
+                    alt={img.caption}
+                    style={{ objectFit: 'contain', width: '100%', height: '100%' }}
+                  />
                 </div>
-              </div>
-            )
-          })}
-        </div>
-      )}
-
-      {!loading && date && images.length === 0 && !error && (
-        <p className="text-center">该日期无 EPIC 图像，请选择其他日期。</p>
-      )}
-    </div>
-  )
+                <Card.Body>
+                  <Card.Text className="mb-1 text-truncate">
+                    {img.caption}
+                  </Card.Text>
+                  <small className="text-muted">{img.date}</small>
+                </Card.Body>
+              </Card>
+            </Col>
+          );
+        })}
+      </Row>
+    </Container>
+  );
 }

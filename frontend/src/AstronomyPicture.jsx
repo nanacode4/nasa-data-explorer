@@ -1,61 +1,92 @@
-// src/AstronomyPicture.jsx
-import React, { useEffect, useState } from 'react'
-import DatePicker from './components/DatePicker'
+// src/components/AstronomyPicture.jsx
+import React, { useEffect, useState } from 'react';
+import DatePicker from './components/DatePicker';
+import { Container, Form, Spinner, Alert, Card } from 'react-bootstrap';
 
 export default function AstronomyPicture() {
-  const [apod, setApod] = useState(null)
-  const [date, setDate] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [apod, setApod] = useState(null);
+  const [date, setDate] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(() => {
+    if (!date) return; // only fetch when a date is selected
+
     const fetchData = async () => {
-      setLoading(true)
-      setError('')
+      setLoading(true);
+      setError('');
       try {
-        const url = date ? `/api/apod?date=${date}` : '/api/apod'
-        const res = await fetch(url)
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        setApod(await res.json())
+        const res = await fetch(`/api/apod?date=${date}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        setApod(await res.json());
       } catch (err) {
-        console.error(err)
-        setError('加载失败，请检查日期或稍后重试')
+        console.error(err);
+        setError('Loading failed, please check the date or try again later');
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchData()
-  }, [date])
+    };
+
+    fetchData();
+  }, [date]);
 
   return (
-    <section className="container mx-auto p-6 bg-white rounded-lg shadow mb-8">
-      <h2 className="text-2xl font-semibold mb-4">Astronomy Picture of the Day</h2>
-
-      <div className="mb-6">
-        <label htmlFor="apod-date" className="mr-2 font-medium">选择日期：</label>
-        <DatePicker value={date} onChange={setDate} />
-      </div>
-
-      {loading && <p className="text-center">Loading…</p>}
-      {error && <p className="text-red-500 text-center">{error}</p>}
-
-      {!loading && apod && (
-        <div>
-          <h3 className="text-xl font-bold">{apod.title}</h3>
-          <p className="italic mb-2">{apod.date}</p>
-          {apod.media_type === 'image'
-            ? <img src={apod.url} alt={apod.title} className="w-full rounded mb-4" />
-            : <iframe
-                title="apod-video"
-                src={apod.url}
-                frameBorder="0"
-                allowFullScreen
-                className="w-full aspect-video rounded mb-4"
-              />
-          }
-          <p className="leading-relaxed">{apod.explanation}</p>
+    <Container className='my-4' style={{ maxWidth: '1400px' }}>
+      {' '}
+      <h1 className='mb-4'>Astronomy Picture of the Day</h1>
+      <Form className='d-flex align-items-center mb-4'>
+        <Form.Label htmlFor='apodDate' className='me-3 mb-0'>
+          Select Date:
+        </Form.Label>
+        <DatePicker id='apodDate' value={date} onChange={setDate} />
+      </Form>
+      {loading && (
+        <div className='text-center my-4'>
+          <Spinner animation='border' />
         </div>
       )}
-    </section>
-  )
+      {error && (
+        <Alert variant='danger' className='text-start'>
+          {error}
+        </Alert>
+      )}
+      {/* Show APOD only when date selected and data available */}
+      {!loading && date && apod ? (
+        <>
+          <h2 className='mt-4 mb-1 text-start'>{apod.title}</h2>
+          {/* <p className='text-muted mb-3 text-start'>{apod.date}</p> */}
+          <Card className='mb-4'>
+            {apod.media_type === 'image' ? (
+              <Card.Img
+                variant='top'
+                src={apod.url}
+                alt={apod.title}
+                style={{ objectFit: 'cover', maxHeight: 700 }}
+              />
+            ) : (
+              <div className='ratio ratio-16x9'>
+                <iframe
+                  title='apod-video'
+                  src={apod.url}
+                  frameBorder='0'
+                  allowFullScreen
+                />
+              </div>
+            )}
+          </Card>
+          <h3 className='text-start' style={{ lineHeight: 1.6 }}>
+            {apod.explanation}
+          </h3>
+        </>
+      ) : (
+        // Prompt when no date chosen
+        !loading &&
+        !error && (
+          <p className='text-start text-muted'>
+            Please select a date to view the Astronomy Picture of the Day.
+          </p>
+        )
+      )}
+    </Container>
+  );
 }
