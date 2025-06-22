@@ -1,15 +1,6 @@
 import React, { useState } from 'react';
 import DatePicker from './components/DatePicker';
-import {
-  Container,
-  Row,
-  Col,
-  Card,
-  Spinner,
-  Alert,
-  Form,
-  Button,
-} from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner, Alert, Form, Button } from 'react-bootstrap';
 
 export default function NasaLibrary() {
   const [query, setQuery] = useState('');
@@ -26,9 +17,7 @@ export default function NasaLibrary() {
     setResults([]);
 
     try {
-      const res = await fetch(
-        `/api/library?q=${encodeURIComponent(query)}`
-      );
+      const res = await fetch(`/api/library?q=${encodeURIComponent(query)}`);
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
       setResults(data.collection.items);
@@ -41,48 +30,47 @@ export default function NasaLibrary() {
   };
 
   return (
-    <Container className="my-4" style={{ maxWidth: '1200px' }}>
-      <h2 className="mb-4">NASA Image and Video Library</h2>
+    <Container className='my-4' style={{ maxWidth: 1400 }}>
+      <h1 className='mb-4'>NASA Image and Video Library</h1>
 
-      <Form onSubmit={handleSearch} className="d-flex mb-4">
+      <Form onSubmit={handleSearch} className='d-flex mb-4'>
         <Form.Control
-          type="text"
-          placeholder="Search keywords, such as: Moon, Mars…"
+          type='text'
+          placeholder='Search keywords, such as: Moon, Mars…'
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="me-2"
+          className='me-2'
         />
-        <Button type="submit" variant="primary">
+        <Button
+          type='submit'
+          style={{
+            backgroundColor: '#0d1b2a',
+          }}
+        >
           Search
         </Button>
       </Form>
 
       {loading && (
-        <div className="text-center">
-          <Spinner animation="border" />
+        <div className='text-center'>
+          <Spinner animation='border' />
         </div>
       )}
-      {error && <Alert variant="danger">{error}</Alert>}
+      {error && <Alert variant='danger'>{error}</Alert>}
 
       {!loading && results.length > 0 && (
-        <Row xs={1} sm={2} md={3} lg={4} className="g-4">
+        <Row xs={1} sm={2} md={3} lg={4} className='g-4'>
           {results.map((item) => {
             const { nasa_id, title, description } = item.data[0];
             const thumb = item.links?.[0]?.href;
             return (
               <Col key={nasa_id}>
-                <Card className="h-100">
-                  {thumb && <Card.Img variant="top" src={thumb} />}
+                <Card className='h-100'>
+                  {thumb && <Card.Img variant='top' src={thumb} />}
                   <Card.Body>
-                    <Card.Title className="text-truncate">
-                      {title}
-                    </Card.Title>
-                    <Card.Subtitle className="mb-2 text-muted">
-                      ID: {nasa_id}
-                    </Card.Subtitle>
-                    <Card.Text className="text-truncate">
-                      {description}
-                    </Card.Text>
+                    <Card.Title className='text-truncate'>{title}</Card.Title>
+                    <Card.Subtitle className='mb-2 text-muted'>ID: {nasa_id}</Card.Subtitle>
+                    <Card.Text className='text-truncate'>{description}</Card.Text>
                   </Card.Body>
                 </Card>
               </Col>
@@ -92,7 +80,7 @@ export default function NasaLibrary() {
       )}
 
       {!loading && !error && results.length === 0 && (
-        <p className="text-center">Please enter keywords and click Search</p>
+        <p className='text-center'>Please enter keywords and click Search</p>
       )}
     </Container>
   );

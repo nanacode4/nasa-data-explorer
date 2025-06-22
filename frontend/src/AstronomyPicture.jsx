@@ -65,18 +65,13 @@ export default function AstronomyPicture() {
               />
             ) : (
               <div className='ratio ratio-16x9'>
-                <iframe
-                  title='apod-video'
-                  src={apod.url}
-                  frameBorder='0'
-                  allowFullScreen
-                />
+                <iframe title='apod-video' src={apod.url} frameBorder='0' allowFullScreen />
               </div>
             )}
           </Card>
-          <h3 className='text-start' style={{ lineHeight: 1.6 }}>
+          <h4 className='text-start' style={{ lineHeight: 1.6 }}>
             {apod.explanation}
-          </h3>
+          </h4>
         </>
       ) : (
         // Prompt when no date chosen
