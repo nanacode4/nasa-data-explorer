@@ -48,7 +48,7 @@ Explore NASA’s open APIs with a sleek, modern React frontend and Express backe
 
 ### 1. Astronomy Picture of the Day (APOD)
 Select a date and view NASA’s featured space image.  
-![APOD Screenshot](./APOD.png)
+![APOD Screenshot](src/assets/APOD.png)
 
 ---
 
