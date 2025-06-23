@@ -16,7 +16,7 @@ Explore NASA’s open APIs with a sleek, modern React frontend and Express backe
 - **API**: [NASA Open APIs](https://api.nasa.gov/)
 - **Hosting**: Render
 
----
+
 
 ## ✅ Public API Routes (Proxy to NASA Open APIs)
 
@@ -55,26 +55,27 @@ Select a date and view NASA’s featured space image.
 
 ### 2. Earth Polychromatic Imaging Camera (EPIC)
 View Earth satellite images from DSCOVR on a selected date, including geospatial and motion data.  
-![EPIC Screenshot](./EPIC.png)
+<img src="frontend/src/assets/EPIC.png" alt="EPIC Screenshot" width="500" height="600" />
+
 
 ---
 
 ### 3. Mars Rover Photos
 Choose a rover (e.g. Curiosity) and Earth date to browse high-res Mars surface images.  
-![Mars Rovers](./Mars%20Rovers.png)
+<img src="frontend/src/assets/Mars%20Rovers.png" alt="Mars Rovers" width="500" height="600" />
 
 ---
 
 ### 4. Near Earth Object Web Service (NeoWs)
 Check upcoming asteroid passes with size, distance, and danger indicators.  
-![NeoWs Screenshot](./NeoWs.png)
+<img src="frontend/src/assets/NeoWs.png" alt="NeoWs Screenshot" width="500" height="600" />
 
 ---
 
 ### 5. NASA Image and Video Library
 Search historical photos and videos from NASA’s rich multimedia archive.  
-![Library Screenshot](./Library.png)  
-![Library Modal](./Library2.png)
+<img src="frontend/src/assets/Library.png" alt="Library Screenshot" width="500" height="600" />
+<img src="frontend/src/assets/Library2.pngg" alt="Library Modal" width="500" height="600" />
 
 ---
 
@@ -83,8 +84,8 @@ Search historical photos and videos from NASA’s rich multimedia archive.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/nasa-explorer.git
-cd nasa-explorer
+git clone https://github.com/nanacode4/nasa-data-explorer.git
+cd nasa-data-explorer
 ```
 
 ### 2. Install dependencies
@@ -107,7 +108,7 @@ npm install
 npm start
 ```
 
----
+
 
 ## ⚠️ Notes
 
@@ -115,4 +116,4 @@ npm start
 - Make sure your NASA API key is valid and not expired (stored in `.env`).
 - Free hosting on Render may take 20-30 seconds cold start time.
 
----
+
