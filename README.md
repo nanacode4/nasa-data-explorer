@@ -1,6 +1,6 @@
 # 🚀 NASA Explorer
 
-Explore NASA’s open APIs with a sleek, modern React frontend and Express backend.
+Explore NASA’s open APIs with React frontend and Express backend.
 
 ## 🌐 Live Demo
 
@@ -48,34 +48,34 @@ Explore NASA’s open APIs with a sleek, modern React frontend and Express backe
 
 ### 1. Astronomy Picture of the Day (APOD)
 Select a date and view NASA’s featured space image.  
-<img src="frontend/src/assets/APOD.png" alt="APOD Screenshot" width="500" height="600" />
+<img src="frontend/src/assets/APOD.png" alt="APOD Screenshot" height="500" />
 
 
 ---
 
 ### 2. Earth Polychromatic Imaging Camera (EPIC)
 View Earth satellite images from DSCOVR on a selected date, including geospatial and motion data.  
-<img src="frontend/src/assets/EPIC.png" alt="EPIC Screenshot" width="500" height="600" />
+<img src="frontend/src/assets/EPIC.png" alt="EPIC Screenshot"  height="600" />
 
 
 ---
 
 ### 3. Mars Rover Photos
 Choose a rover (e.g. Curiosity) and Earth date to browse high-res Mars surface images.  
-<img src="frontend/src/assets/Mars%20Rovers.png" alt="Mars Rovers" width="500" height="600" />
+<img src="frontend/src/assets/Mars%20Rovers.png" alt="Mars Rovers"  height="600" />
 
 ---
 
 ### 4. Near Earth Object Web Service (NeoWs)
 Check upcoming asteroid passes with size, distance, and danger indicators.  
-<img src="frontend/src/assets/NeoWs.png" alt="NeoWs Screenshot" width="500" height="600" />
+<img src="frontend/src/assets/NeoWs.png" alt="NeoWs Screenshot"  height="500" />
 
 ---
 
 ### 5. NASA Image and Video Library
 Search historical photos and videos from NASA’s rich multimedia archive.  
-<img src="frontend/src/assets/Library.png" alt="Library Screenshot" width="500" height="600" />
-<img src="frontend/src/assets/Library2.pngg" alt="Library Modal" width="500" height="600" />
+<img src="frontend/src/assets/Library.png" alt="Library Screenshot"  height="500" />
+<img src="frontend/src/assets/Library2.png" alt="Library Modal" height="500" />
 
 ---
 
@@ -105,7 +105,7 @@ node server.js
 ```bash
 cd frontend
 npm install
-npm start
+npm run dev
 ```
 
 
@@ -114,6 +114,5 @@ npm start
 
 - NASA APIs occasionally fail due to rate limits or missing data for some dates — this is expected.
 - Make sure your NASA API key is valid and not expired (stored in `.env`).
-- Free hosting on Render may take 20-30 seconds cold start time.
 
 
