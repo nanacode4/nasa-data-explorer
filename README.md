@@ -7,7 +7,7 @@ Explore NASA’s open APIs with a sleek, modern React frontend and Express backe
 - **Frontend**: [https://nasa-frontend-kpp6.onrender.com](https://nasa-frontend-kpp6.onrender.com)  
 - **Backend**: [https://nasa-backend-6asb.onrender.com](https://nasa-backend-6asb.onrender.com)
 
----
+
 
 ## 🔧 Tech Stack
 
@@ -30,7 +30,7 @@ Explore NASA’s open APIs with a sleek, modern React frontend and Express backe
 
 > All endpoints are unauthenticated. Query parameters are required for date-based APIs.
 
----
+
 
 ## 🛠️ API Endpoint Details (Backend Logic from `server.js`)
 
@@ -48,9 +48,8 @@ Explore NASA’s open APIs with a sleek, modern React frontend and Express backe
 
 ### 1. Astronomy Picture of the Day (APOD)
 Select a date and view NASA’s featured space image.  
-<img src="frontend/src/assets/APOD.png" alt="APOD Screenshot" width="400" height="300" />
+<img src="frontend/src/assets/APOD.png" alt="APOD Screenshot" width="500" height="600" />
 
-![APOD Screenshot](frontend/src/assets/APOD.png)
 
 ---
 
