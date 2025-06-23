@@ -38,7 +38,9 @@ export default function AstronomyPicture() {
         <Form.Label htmlFor='apodDate' className='me-3 mb-0'>
           Select Date:
         </Form.Label>
+        <div style={{ width: '200px' }}>
         <DatePicker id='apodDate' value={date} onChange={setDate} />
+        </div>
       </Form>
       {loading && (
         <div className='text-center my-4'>

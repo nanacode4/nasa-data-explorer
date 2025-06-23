@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
-import DatePicker from './components/DatePicker';
-import { Container, Row, Col, Card, Spinner, Alert, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Card, Spinner, Alert, Form, Button, Modal } from 'react-bootstrap';
 
 export default function NasaLibrary() {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const itemsPerPage = 20;
+  const totalPages = Math.ceil(results.length / itemsPerPage);
+  const paginatedResults = results.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const handleSearch = async (e) => {
     e.preventDefault();
@@ -15,12 +23,13 @@ export default function NasaLibrary() {
     setLoading(true);
     setError('');
     setResults([]);
+    setCurrentPage(1);
 
     try {
       const res = await fetch(`/api/library?q=${encodeURIComponent(query)}`);
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
-      setResults(data.collection.items);
+      setResults(data.collection.items || []);
     } catch (err) {
       console.error(err);
       setError('Search failed. Please try again later.');
@@ -41,12 +50,7 @@ export default function NasaLibrary() {
           onChange={(e) => setQuery(e.target.value)}
           className='me-2'
         />
-        <Button
-          type='submit'
-          style={{
-            backgroundColor: '#0d1b2a',
-          }}
-        >
+        <Button type='submit' style={{ backgroundColor: '#0d1b2a' }}>
           Search
         </Button>
       </Form>
@@ -58,29 +62,76 @@ export default function NasaLibrary() {
       )}
       {error && <Alert variant='danger'>{error}</Alert>}
 
-      {!loading && results.length > 0 && (
-        <Row xs={1} sm={2} md={3} lg={4} className='g-4'>
-          {results.map((item) => {
-            const { nasa_id, title, description } = item.data[0];
-            const thumb = item.links?.[0]?.href;
-            return (
-              <Col key={nasa_id}>
-                <Card className='h-100'>
-                  {thumb && <Card.Img variant='top' src={thumb} />}
-                  <Card.Body>
-                    <Card.Title className='text-truncate'>{title}</Card.Title>
-                    <Card.Subtitle className='mb-2 text-muted'>ID: {nasa_id}</Card.Subtitle>
-                    <Card.Text className='text-truncate'>{description}</Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
+      {!loading && paginatedResults.length > 0 && (
+        <>
+          <Row xs={1} sm={2} md={3} lg={4} className='g-4'>
+            {paginatedResults.map((item) => {
+              const { nasa_id, title, description } = item.data[0];
+              const thumb = item.links?.[0]?.href;
+              return (
+                <Col key={nasa_id}>
+                  <Card
+                    className='h-100'
+                    onClick={() => setSelectedItem(item)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {thumb && <Card.Img variant='top' src={thumb} />}
+                    <Card.Body>
+                      <Card.Title className='text-truncate'>{title}</Card.Title>
+                      <Card.Subtitle className='mb-2 text-muted'>ID: {nasa_id}</Card.Subtitle>
+                      <Card.Text className='text-truncate'>{description}</Card.Text>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
+
+          <div className='text-center mt-4'>
+            <div className='inline-flex items-center gap-2'>
+              <span className='me-2'>Page</span>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <Button
+                  key={page}
+                  variant={page === currentPage ? 'primary' : 'outline-secondary'}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </Button>
+              ))}
+            </div>
+          </div>
+        </>
       )}
 
       {!loading && !error && results.length === 0 && (
         <p className='text-center'>Please enter keywords and click Search</p>
+      )}
+
+      {/* Modal for detail */}
+      {selectedItem && (
+        <Modal show={true} onHide={() => setSelectedItem(null)} size='lg'>
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedItem.data[0].title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {selectedItem.links?.[0]?.href && (
+              <img src={selectedItem.links[0].href} alt='Preview' className='img-fluid mb-3' />
+            )}
+            <p>
+              <strong>ID:</strong> {selectedItem.data[0].nasa_id}
+            </p>
+            <p>
+              <strong>Date Created:</strong> {selectedItem.data[0].date_created}
+            </p>
+            <p>{selectedItem.data[0].description}</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant='secondary' onClick={() => setSelectedItem(null)}>
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
       )}
     </Container>
   );

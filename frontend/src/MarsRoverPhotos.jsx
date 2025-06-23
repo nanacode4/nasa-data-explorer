@@ -40,28 +40,35 @@ export default function MarsRoverPhotos() {
   return (
     <Container className='my-4' style={{ maxWidth: '1400px' }}>
       <h1 className='mb-4'>Mars Rover Photos</h1>
-      <Form className='d-flex mb-4 align-items-center gap-4'>
-        <Form.Group controlId='roverSelect' className='d-flex align-items-center me-3'>
-          <Form.Label htmlFor='roverSelect' className='mb-0 me-2'>
-            Select a Rover
-          </Form.Label>
-          <Form.Select
-            value={selectedRover}
-            onChange={(e) => setSelectedRover(e.target.value)}
-            className='w-auto'
-          >
-            {rovers.map((r) => (
-              <option key={r} value={r}>
-                {r}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-
-        <Form.Group controlId='datePicker' className='mb-0 me-2'>
-          <Form.Label>Select Date</Form.Label>
-          <DatePicker value={date} onChange={setDate} className='w-auto' />
-        </Form.Group>
+      <Form className='mb-4'>
+        <Row className='align-items-center g-3'>
+          <Col xs='auto'>
+            <Form.Label htmlFor='roverSelect' className='mb-0'>
+              Select a Rover
+            </Form.Label>
+          </Col>
+          <Col xs='auto'>
+            <Form.Select
+              id='roverSelect'
+              value={selectedRover}
+              onChange={(e) => setSelectedRover(e.target.value)}
+            >
+              {rovers.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </Form.Select>
+          </Col>
+          <Col xs='auto'>
+            <Form.Label htmlFor='roverDate' className='mb-0'>
+              Select Date
+            </Form.Label>
+          </Col>
+          <Col xs='auto'>
+            <DatePicker id='roverDate' value={date} onChange={setDate} />
+          </Col>
+        </Row>
       </Form>
 
       {loading && <Spinner animation='border' />}

@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from './components/DatePicker';
-import { Container } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Card,
+  Button,
+  Spinner,
+  Alert,
+  Pagination,
+} from 'react-bootstrap';
 
 export default function NeoWs() {
   const [startDate, setStartDate] = useState('');
@@ -47,71 +57,88 @@ export default function NeoWs() {
   const paginatedNeos = neos.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   return (
-    <Container fluid className='my-4' style={{ maxWidth: 1400 }}>
-      <h1>Near Earth Object Web Service (NeoWs)</h1>
+    <Container className='my-4'>
+      <h2 className='mb-4'>Near Earth Object Web Service (NeoWs)</h2>
+      <Form>
+        <Row className='align-items-center mb-4'>
+          <Col xs='auto'>
+            <Form.Label htmlFor='neo-start' className='mb-0'>
+              Start Date:
+            </Form.Label>
+          </Col>
+          <Col xs='auto'>
+            <DatePicker id='neo-start' value={startDate} onChange={setStartDate} />
+          </Col>
+          <Col xs='auto'>
+            <Form.Label htmlFor='neo-end' className='mb-0'>
+              End Date:
+            </Form.Label>
+          </Col>
+          <Col xs='auto'>
+            <DatePicker id='neo-end' value={endDate} onChange={setEndDate} />
+          </Col>
+        </Row>
+      </Form>
 
-      <div className='mb-4 flex flex-wrap gap-4'>
-        <div>
-          <label htmlFor='neo-start' className='mr-2 font-medium'>
-            Start Date:
-          </label>
-          <DatePicker id='neo-start' value={startDate} onChange={setStartDate} />
+      {loading && (
+        <div className='text-center'>
+          <Spinner animation='border' />
         </div>
-        <div>
-          <label htmlFor='neo-end' className='mr-2 font-medium'>
-            End Date:
-          </label>
-          <DatePicker id='neo-end' value={endDate} onChange={setEndDate} />
-        </div>
-      </div>
+      )}
 
-      {loading && <p className='text-center'>Loading…</p>}
-      {error && <p className='text-red-500 text-center'>{error}</p>}
+      {error && (
+        <Alert variant='danger' className='text-center'>
+          {error}
+        </Alert>
+      )}
 
       {!loading && paginatedNeos.length > 0 && (
-        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+        <Row xs={1} md={2} className='g-4'>
           {paginatedNeos.map((neo) => (
-            <div key={neo.id} className='border rounded p-4'>
-              <h3 className='font-bold truncate'>{neo.name}</h3>
-              <p className='text-sm'>Approaching date: {neo.close_approach_date}</p>
-              <p className='text-sm'>
-                Estimated diameter:{' '}
-                {neo.estimated_diameter.kilometers.estimated_diameter_min.toFixed(3)} -{' '}
-                {neo.estimated_diameter.kilometers.estimated_diameter_max.toFixed(3)} km
-              </p>
-              <p className='text-sm'>
-                Is it potentially dangerous?: {neo.is_potentially_hazardous_asteroid ? 'yes' : 'no'}
-              </p>
-              <p className='text-sm'>
-                Minimum distance:{' '}
-                {parseFloat(neo.close_approach_data?.[0]?.miss_distance.kilometers || 0).toFixed(0)}{' '}
-                km
-              </p>
-            </div>
+            <Col key={neo.id}>
+              <Card>
+                <Card.Body>
+                  <Card.Title>{neo.name}</Card.Title>
+                  <Card.Text>
+                    <strong>Approaching date:</strong> {neo.close_approach_date} <br />
+                    <strong>Estimated diameter:</strong>{' '}
+                    {neo.estimated_diameter.kilometers.estimated_diameter_min.toFixed(3)} -{' '}
+                    {neo.estimated_diameter.kilometers.estimated_diameter_max.toFixed(3)} km
+                    <br />
+                    <strong>Is it potentially dangerous?:</strong>{' '}
+                    {neo.is_potentially_hazardous_asteroid ? 'yes' : 'no'}
+                    <br />
+                    <strong>Minimum distance:</strong>{' '}
+                    {parseFloat(
+                      neo.close_approach_data?.[0]?.miss_distance.kilometers || 0
+                    ).toFixed(0)}{' '}
+                    km
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
           ))}
-        </div>
+        </Row>
       )}
 
       {!loading && startDate && neos.length === 0 && !error && (
-        <p className='text-center'>No NEOs were found for this date range.</p>
+        <p className='text-center mt-4'>No NEOs were found for this date range.</p>
       )}
 
       {!loading && totalPages > 1 && (
-        <div className='w-full flex justify-center mt-6'>
-          <div className='flex items-center gap-2'>
-            <span className='text-sm font-medium'>Page</span>
+        <div className='d-flex justify-content-center mt-4'>
+          <span className='me-2'>Page</span>
+          <Pagination>
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <button
+              <Pagination.Item
                 key={page}
+                active={page === currentPage}
                 onClick={() => setCurrentPage(page)}
-                className={`px-3 py-1 rounded border ${
-                  currentPage === page ? 'bg-blue-500 text-white' : 'bg-gray-100'
-                }`}
               >
                 {page}
-              </button>
+              </Pagination.Item>
             ))}
-          </div>
+          </Pagination>
         </div>
       )}
     </Container>

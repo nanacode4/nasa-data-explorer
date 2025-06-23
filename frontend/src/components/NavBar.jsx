@@ -14,11 +14,7 @@ export default function NavBar() {
       }}
     >
       <Container>
-        <Navbar.Brand
-          as={NavLink}
-          to='/'
-          style={{ fontSize: '1.5rem', lineHeight: '80px' }}
-        >
+        <Navbar.Brand as={NavLink} to='/' style={{ fontSize: '1.5rem', lineHeight: '80px' }}>
           NASA Explorer
         </Navbar.Brand>
         <Navbar.Toggle aria-controls='nav-links' />

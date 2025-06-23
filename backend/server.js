@@ -109,6 +109,16 @@ app.get('/api/library', async (req, res) => {
   }
 })
 
-app.listen(PORT, () => {
-  console.log(`Server is listening on http://localhost:${PORT}`)
-})
+// app.listen(PORT, () => {
+  // console.log(`Server is listening on http://localhost:${PORT}`)
+// })
+
+module.exports = app;
+
+
+if (require.main === module) {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`Server is listening on http://localhost:${PORT}`);
+  });
+}

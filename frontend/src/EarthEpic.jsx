@@ -13,7 +13,7 @@ import {
   Line,
   Marker,
 } from 'react-simple-maps';
-import { Card, Container, Row, Col } from 'react-bootstrap';
+import { Card, Container, Row, Col, Form } from 'react-bootstrap';
 import {
   LineChart,
   Line as ReLine,
@@ -95,8 +95,17 @@ export default function EarthTrack() {
       <h5 className='mb-3'>
         This image was taken by NASA's EPIC camera onboard the NOAA DSCOVR spacecraft
       </h5>
-      <h5 className='mb-3'>Choose a date to view satellite images and track the Earth's position from DSCOVR </h5>
-      <DatePicker value={date} onChange={setDate} className='mb-4' placeholder='Choose a date' />
+      <h5 className='mb-3'>
+        Choose a date to view satellite images and track the Earth's position from DSCOVR{' '}
+      </h5>
+      <Form className='d-flex align-items-center mb-4'>
+        <Form.Label htmlFor='epic-date' className='me-3 mb-0'>
+          Select Date:
+        </Form.Label>
+        <div style={{ maxWidth: '200px' }}>
+          <DatePicker id='epic-date' value={date} onChange={setDate} className='w-100' />
+        </div>
+      </Form>
 
       <Row className='mb-4'>
         <Col md={8}>
