@@ -37,7 +37,7 @@ export default function EarthTrack() {
 
   useEffect(() => {
     if (!date) return;
-    fetch(`/api/epic?date=${date}`)
+    fetch(`https://nasa-backend.onrender.com/api/epic?date=${date}`)
       .then((res) => {
         if (!res.ok) throw new Error(res.statusText);
         return res.json();

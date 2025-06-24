@@ -26,7 +26,7 @@ export default function NasaLibrary() {
     setCurrentPage(1);
 
     try {
-      const res = await fetch(`/api/library?q=${encodeURIComponent(query)}`);
+      const res = await fetch(`https://nasa-backend.onrender.com/api/library?q=${encodeURIComponent(query)}`);
       if (!res.ok) throw new Error(`Error ${res.status}`);
       const data = await res.json();
       setResults(data.collection.items || []);

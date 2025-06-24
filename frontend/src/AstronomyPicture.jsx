@@ -16,7 +16,7 @@ export default function AstronomyPicture() {
       setLoading(true);
       setError('');
       try {
-        const res = await fetch(`/api/apod?date=${date}`);
+        const res = await fetch(`https://nasa-backend-6asb.onrender.com/api/apod?date=${date}`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         setApod(await res.json());
       } catch (err) {
