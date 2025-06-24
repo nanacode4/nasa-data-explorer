@@ -4,13 +4,19 @@ const axios = require("axios");
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-
-require("dotenv").config();
 const NASA_KEY = process.env.NASA_API_KEY;
-console.log("NASA API Key:", process.env.NASA_API_KEY);
 
+if (!NASA_KEY) {
+  console.warn("NASA_API_KEY is not set. Please check your Render environment variables.");
+}
 
-// Health check endpoint
+// Middleware for logging
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
+// Health check
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
@@ -21,9 +27,7 @@ app.get("/api/apod", async (req, res) => {
     const params = { api_key: NASA_KEY };
     if (req.query.date) params.date = req.query.date;
 
-    const response = await axios.get("https://api.nasa.gov/planetary/apod", {
-      params,
-    });
+    const response = await axios.get("https://api.nasa.gov/planetary/apod", { params });
     res.json(response.data);
   } catch (error) {
     console.error("APOD fetch error:", error.message);
@@ -35,9 +39,7 @@ app.get("/api/apod", async (req, res) => {
 app.get("/api/mars-photos", async (req, res) => {
   const { rover, earth_date } = req.query;
   if (!rover || !earth_date) {
-    return res
-      .status(400)
-      .json({ error: "Missing rover or earth_date parameter" });
+    return res.status(400).json({ error: "Missing rover or earth_date parameter" });
   }
 
   try {
@@ -52,7 +54,7 @@ app.get("/api/mars-photos", async (req, res) => {
   }
 });
 
-// EPIC (Earth Polychromatic Imaging Camera)
+// EPIC data
 app.get("/api/epic", async (req, res) => {
   const { date } = req.query;
   if (!date) {
@@ -106,19 +108,12 @@ app.get("/api/library", async (req, res) => {
     res.status(500).json({ error: "Failed to fetch library data" });
   }
 });
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
-});
 
-// app.listen(PORT, () => {
-// console.log(`Server is listening on http://localhost:${PORT}`)
-// })
-
-module.exports = app;
-
+// Start server only if called directly
 if (require.main === module) {
-  const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
-    console.log(`Server is listening on http://localhost:${PORT}`);
+    console.log(`Server running at http://localhost:${PORT}`);
   });
 }
+
+module.exports = app;
