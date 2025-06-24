@@ -42,7 +42,7 @@ Explore NASA’s open APIs with React frontend and Express backend.
 | GET    | `/api/neows`   | Proxy to NASA's NEO Web Service            |
 | GET    | `/api/library` | Proxy to NASA's Image & Video Search API   |
 
----
+
 
 ## 🛰 Features Overview
 
