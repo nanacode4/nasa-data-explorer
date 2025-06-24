@@ -7,6 +7,8 @@ const PORT = process.env.PORT || 3001;
 
 require("dotenv").config();
 const NASA_KEY = process.env.NASA_API_KEY;
+console.log("NASA API Key:", process.env.NASA_API_KEY);
+
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
