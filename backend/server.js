@@ -18,7 +18,8 @@ app.use((req, res, next) => {
 });
 
 app.use(cors({
-  origin: 'https://nasa-frontend-kpp6.onrender.com'
+  origin: ['https://nasa-frontend-kpp6.onrender.com'], 
+  methods: ['GET', 'POST'],
 }));
 
 // Health check
