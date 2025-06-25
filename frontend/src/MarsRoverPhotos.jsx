@@ -21,7 +21,7 @@ export default function MarsRoverPhotos() {
 
       try {
         const res = await fetch(
-          `https://nasa-backend.onrender.com/api/mars-photos?rover=${selectedRover.toLowerCase()}&earth_date=${date}&page=1`
+          `https://nasa-backend-6asb.onrender.com/api/mars-photos?rover=${selectedRover.toLowerCase()}&earth_date=${date}&page=1`
         );
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
